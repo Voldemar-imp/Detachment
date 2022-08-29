@@ -91,7 +91,7 @@ namespace Detachment
         private int _positionY;
         private List<int> _targets;
         private List<Soldier> _soldiers = new List<Soldier>();
-        private List<Soldier> _killeds = new List<Soldier>();
+        private List<Soldier> _deadSoldiers = new List<Soldier>();
 
         public string CountryName { get; }
         public int Count { get { return _soldiers.Count; } }
@@ -144,36 +144,30 @@ namespace Detachment
         {
             int positionX = _positionX;
             int positionY = _positionY;
-
             Console.SetCursorPosition(positionX, positionY++);
             Console.Write($"Солдаты страны: {CountryName}");
             ShowSoldiers(_soldiers, ref positionX, ref positionY);
-            ShowSoldiers(_killeds, ref positionX, ref positionY);
+            ShowSoldiers(_deadSoldiers, ref positionX, ref positionY);
         }
 
         private void PassKilleds()
         {
-            List<Soldier> passList = new List<Soldier>();
-
             foreach (Soldier soldier in _soldiers)
             {
                 if (soldier.Health <= 0)
                 {
-                    passList.Add(soldier);
+                    _deadSoldiers.Add(soldier);
                 }
             }
 
-            foreach (Soldier soldier in passList)
+            foreach (Soldier soldier in _deadSoldiers)
             {
                 _soldiers.Remove(soldier);
             }
-
-            _killeds.AddRange(passList);
         }
 
         private void ShowSoldiers(List<Soldier> list, ref int positionX, ref int positionY)
         {
-
             for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].Health > 0)
@@ -186,7 +180,7 @@ namespace Detachment
                 else
                 {
                     Console.SetCursorPosition(positionX, ++positionY);
-                    _killeds[i].ShowInfo();
+                    _deadSoldiers[i].ShowInfo();
                 }
             }
         }
@@ -204,8 +198,10 @@ namespace Detachment
             {
                 return new Stormtrooper();
             }
-
-            return new Sniper();
+            else
+            {
+                return new Sniper();
+            }
         }
     }
 
@@ -234,7 +230,6 @@ namespace Detachment
             Health -= damage;
         }
 
-
         public void ShowInfo()
         {
             if (Health > 0)
@@ -257,25 +252,16 @@ namespace Detachment
 
     class Private : Soldier
     {
-        public Private() : base("Рядовой", 1000, 100, 20)
-        {
-
-        }
+        public Private() : base("Рядовой", 1000, 100, 20) { }
     }
 
     class Stormtrooper : Soldier
     {
-        public Stormtrooper() : base("Штурмовик", 1500, 100, 50)
-        {
-
-        }
+        public Stormtrooper() : base("Штурмовик", 1500, 100, 50) { }
     }
 
     class Sniper : Soldier
     {
-        public Sniper() : base("Снайпер", 800, 400, 10)
-        {
-
-        }
+        public Sniper() : base("Снайпер", 800, 400, 10) { }
     }
 }
