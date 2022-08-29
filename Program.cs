@@ -34,6 +34,8 @@ namespace Detachment
                 ShowInfo(_detachment2);
                 _detachment1.TakeDmageList(_detachment2.GetDamageList(_detachment1.Count));
                 _detachment2.TakeDmageList(_detachment1.GetDamageList(_detachment2.Count));
+                _detachment1.RemoveDeadSoldiers();
+                _detachment2.RemoveDeadSoldiers();
 
                 if (_detachment1.Count == 0 || _detachment2.Count == 0)
                 {
@@ -135,10 +137,18 @@ namespace Detachment
             for (int i = 0; i < _soldiers.Count; i++)
             {
                 _soldiers[i].TakeDamage(damages[i]);
-            }
-
-            PassKilleds();
+            }            
         }
+
+        public void RemoveDeadSoldiers()
+        {
+            AddToDeadSoldiersList();
+
+            foreach (Soldier soldier in _deadSoldiers)
+            {
+                _soldiers.Remove(soldier);
+            }
+        }       
 
         public void ShowInfo()
         {
@@ -150,7 +160,7 @@ namespace Detachment
             ShowSoldiers(_deadSoldiers, ref positionX, ref positionY);
         }
 
-        private void PassKilleds()
+        private void AddToDeadSoldiersList()
         {
             foreach (Soldier soldier in _soldiers)
             {
@@ -158,11 +168,6 @@ namespace Detachment
                 {
                     _deadSoldiers.Add(soldier);
                 }
-            }
-
-            foreach (Soldier soldier in _deadSoldiers)
-            {
-                _soldiers.Remove(soldier);
             }
         }
 
